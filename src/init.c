@@ -38,4 +38,6 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize(){
+  lcdInit(uart2);
+  lcdClear(uart2);
 }

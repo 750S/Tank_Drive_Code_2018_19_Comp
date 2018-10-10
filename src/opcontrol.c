@@ -1,12 +1,12 @@
 #include "main.h"
 #include "global.h"
 
-#define versionnumber "2.1.8"
+#define versionnumber "2.1.9"
 /*
 NOTES:
 implement constants and methods
 */
-#define thresh 10
+#define thresh 20
 
 void driving(); //The function will read the left joystick's coordinates and will set the motor's speeds to match
 void stopDriving();
@@ -34,18 +34,10 @@ int drivingMode = 0;
 void operatorControl() {
   //Type pros terminal
   printf("Version #: %s\n\nTank_Drive_Code_2018_19_TLC\n\n\n",versionnumber);
-  analogCalibrate(ARMLPOT);
-  analogCalibrate(ARMRPOT);
-  analogCalibrate(CLAWROTATEPOT);
-  int loop = 0;
   while (1) {
+    lcdSetText(uart2, 2, "Hello World");
     if(drivingMode == 0||drivingMode == 2){
       driving();
-      loop++;
-      if(loop>5000){
-        printf("Arm L: %d, Arm R: %d, Claw Rotate: %d\n",analogReadCalibrated(ARMLPOT),analogReadCalibrated(ARMRPOT),analogReadCalibrated(CLAWROTATEPOT));
-        loop=0;
-      }
       //Arm controls
       if(joystickGetDigital(1,5,JOY_UP)||joystickGetDigital(2,5,JOY_UP)){
         clawRotateSpeed(-127);
@@ -151,36 +143,6 @@ void operatorControl() {
       }
 
 
-      if (joystickGetDigital(1, 5, JOY_UP)){
-        motorSet(ARML, 127);
-      }else if (joystickGetDigital(1, 5, JOY_DOWN)){
-        motorSet(ARML, -127);
-      }else{
-        motorSet(ARML, 0);
-      }
-      if (joystickGetDigital(1, 6, JOY_UP)){
-        motorSet(ARMR, -127);
-      }else if (joystickGetDigital(1, 6, JOY_DOWN)){
-        motorSet(ARMR, 127);
-      }else{
-        motorSet(ARMR, 0);
-      }
-      if (joystickGetAnalog(1, 3)>20){
-        motorSet(ARML, 127);
-      }else if (joystickGetAnalog(1, 3)<-20){
-        motorSet(ARML, -127);
-      }else{
-        motorSet(ARML, 0);
-      }
-      if (joystickGetAnalog(1, 2)>20){
-        motorSet(ARMR, -127);
-      }else if (joystickGetAnalog(1, 2)<-20){
-        motorSet(ARMR, 127);
-      }else{
-        motorSet(ARMR, 0);
-      }
-
-
       if (joystickGetAnalog(1, 4)>20){
         motorSet(CLAW, -127);
       }else if (joystickGetAnalog(1, 4)<-20){
@@ -245,10 +207,6 @@ void driving(){
   /*if(ypos >= -thresh){*/
     xpos = xpos * -1;
   /*}*/
-  motorSet(BL, (ypos-xpos));
-  motorSet(TL, (ypos-xpos));
-  motorSet(TR, -1 * (ypos+xpos));
-  motorSet(BR, -1 * (ypos+xpos));
 }
 /*
 void stopDriving(){
